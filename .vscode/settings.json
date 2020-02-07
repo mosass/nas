@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/Users/mosass/Working/github.com/mosass/nas/cpuenv/bin/python3",
+    "python.pythonPath": "cpuenv/bin/python",
     "python.linting.enabled": true
 }
