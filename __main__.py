@@ -1,12 +1,12 @@
-from ga_nas import islga
+from nas import ga_nas
 from nasbench import api
 
 def main():
-    nas = islga.ISLGA('nasbench_only108.tfrecord')
+    ganas = ga_nas.GANAS()
 
-    for i in range(1, 100):
-        g = nas.generate_random_spac().visualize()
-        g.render("output/dot"+str(i), view=True)
+    for i in range(1, 10):
+        g = ganas.generate_random_spac().visualize()
+        g.render("output/dot"+str(i), view=False)
 
 if __name__ == "__main__":
     main()
