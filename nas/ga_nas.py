@@ -23,12 +23,14 @@ class GANAS(nas.NAS):
         self.mutation_rate = mutation_rate
 
     def initialization(self):
-        self.nasbench.reset_budget_counters()
-        return self.generate_random_spacs(self.population_size)
+        self.reset_budget()
+        specs = self.generate_random_spacs(self.population_size)
+        for spec in specs :
+            self.population.append((self.fitness(spec), spec))
 
     def fitness(self, spec):
         data = self.eval_query(spec)
-        time_spent, _ = nasbench.get_budget_counters()
-        times.append(time_spent)
-        population.append((data['validation_accuracy'], spec))
-        return self.nasbench.query(spec)
+        return data['validation_accuracy']
+
+    def selection(self):
+        sorted()

@@ -18,6 +18,10 @@ class NAS(object):
         if(not hasattr(self, 'nasbench')):
             self.nasbench = api.NASBench(self.nasbench_file_path)
 
+    def reset_budget(self):
+        self._load_data()
+        self.nasbench.reset_budget_counters()
+
     def generate_random_spac(self):
         self._load_data()
         while True:
