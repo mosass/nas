@@ -99,8 +99,7 @@ from nasbench.lib import evaluate
 from nasbench.lib import model_metrics_pb2
 from nasbench.lib import model_spec as _model_spec
 import numpy as np
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+import tensorflow as tf
 
 # Bring ModelSpec to top-level for convenience. See lib/model_spec.py.
 ModelSpec = _model_spec.ModelSpec

@@ -7,6 +7,7 @@ from nas import constant as C
 class NAS(object):
     times: [] = [0.0]
     best_specs: []
+    nasbench: api.NASBench
 
     def __init__(self, file_path="dataset/nasbench_only108.tfrecord", lazy=True):
         super().__init__()

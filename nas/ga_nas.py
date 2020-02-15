@@ -25,8 +25,9 @@ class GANAS(nas.NAS):
     def initialization(self):
         self.reset_budget()
         specs = self.generate_random_spacs(self.population_size)
-        for spec in specs :
-            self.population.append((self.fitness(spec), spec))
+        return specs
+        # for spec in specs :
+        #     self.population.append((self.fitness(spec), spec))
 
     def fitness(self, spec):
         data = self.eval_query(spec)
