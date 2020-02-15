@@ -3,6 +3,9 @@ from util import helper
 import numpy as np
 from nas import constant as C
 
+import logging
+logging.getLogger().setLevel(logging.INFO)
+
 def main():
     nasbench = api.NASBench('dataset/nasbench_only108.tfrecord')
     nasbench.config['use_tpu'] = False
@@ -15,12 +18,13 @@ def main():
     nasbench.config['valid_data_file'] = 'dataset/cifar10/validation.tfrecords'
     nasbench.config['test_data_file'] = 'dataset/cifar10/test.tfrecords'
     nasbench.config['sample_data_file'] = 'dataset/cifar10/sample.tfrecords'
+    nasbench.config['train_epochs'] = 16
 
     spec = sample_spec(nasbench)
     helper.print_spec(spec)
-    nasbench.evaluate(spec, 'output/t01')
+    nasbench.evaluate(spec, 'output/t02')
 
-def sample_spec(nasbench: api.NASBench):
+def sample_spec(nasbench):
     while True:
         matrix = np.random.choice(C.ALLOWED_EDGES, size=(C.NUM_VERTICES, C.NUM_VERTICES))
         matrix = np.triu(matrix, 1)

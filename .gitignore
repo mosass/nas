@@ -2,3 +2,4 @@ __pycache__
 dataset
 output
 .vscode/settings.json
+*.pyc
