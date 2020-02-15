@@ -1,12 +1,13 @@
 from nas import ga_nas
 from nasbench import api
+from util import helper
 
 def main():
     ganas = ga_nas.GANAS()
+    specs = ganas.initialization()
 
-    for i in range(1, 10):
-        g = ganas.generate_random_spac().visualize()
-        g.render("output/dot"+str(i), view=False)
+    for s in specs:
+        helper.print_spec(s)
 
 if __name__ == "__main__":
     main()
