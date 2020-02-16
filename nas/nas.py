@@ -5,9 +5,8 @@ from nasbench import api
 from nas import constant as C
 
 class NAS(object):
-    times: [] = [0.0]
-    best_specs: []
-    nasbench: api.NASBench
+    times = [0.0]
+    best_specs = []
 
     def __init__(self, file_path="dataset/nasbench_only108.tfrecord", lazy=True):
         super().__init__()
@@ -22,8 +21,16 @@ class NAS(object):
     def reset_budget(self):
         self._load_data()
         self.nasbench.reset_budget_counters()
+    
+    def create_spec(self, matrix, ops):
+        spec = api.ModelSpec(matrix=matrix, ops=ops)
+        if self.nasbench.is_valid(spec):
+            return spec
+        else:
+            return False
 
-    def generate_random_spac(self):
+
+    def generate_random_spec(self):
         self._load_data()
         while True:
             matrix = np.random.choice(C.ALLOWED_EDGES, size=(C.NUM_VERTICES, C.NUM_VERTICES))
@@ -31,20 +38,30 @@ class NAS(object):
             ops = np.random.choice(C.ALLOWED_OPS, size=(C.NUM_VERTICES)).tolist()
             ops[0] = C.INPUT
             ops[-1] = C.OUTPUT
-            spec = api.ModelSpec(matrix=matrix, ops=ops)
-            if self.nasbench.is_valid(spec):
+            spec = self.create_spec(matrix=matrix, ops=ops)
+            if spec != False:
                 return spec
 
-    def generate_random_spacs(self, size):
-        return tuple(self.generate_random_spac() for i in range(1, size))
+    def generate_random_specs(self, size):
+        return (self.generate_random_spec() for i in range(1, size))
 
     def eval_query(self, spec):
         data = self.nasbench.query(spec)
-        time_spent, _ = nasbench.get_budget_counters()
+        time_spent, _ = self.nasbench.get_budget_counters()
         self.times.append(time_spent)
-        self.best_specs.append(self.compare_spec(self.best_specs[-1], data))
-        return data
 
-    ''' return the best spec'''
-    def compare_spec(self, data, data_new):
-        raise NotImplementedError
+        indv = (spec, data)
+
+        if self.compare_indv(indv, self.best_specs[-1]) >= 0:
+            self.best_specs.append((spec, data))
+        else:
+            self.best_specs.append(self.best_specs[-1])
+
+        return indv
+
+    '''
+    The return value is negative if indv1 < indv2, zero if indv1 == indv2
+    and strictly positive if indv1 > indv1.
+    '''
+    def compare_indv(self, indv1, indv2):
+        return (indv1[1]['validation_accuracy'] > indv2[1]['validation_accuracy']) - (indv1[1]['validation_accuracy'] < indv2[1]['validation_accuracy'])
