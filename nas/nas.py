@@ -2,24 +2,16 @@ import numpy as np
 import copy as copy
 import tensorflow as tf
 from nasbench import api
-from nas import constant as C
+import constant as C
 
 class NAS(object):
   times = [0.0]
   best_specs = []
 
-  def __init__(self, file_path="dataset/nasbench_only108.tfrecord", lazy=True):
-    super().__init__()
-    self.nasbench_file_path = file_path
-    if(lazy == False):
-      self._load_data()
-
-  def _load_data(self):
-    if(not hasattr(self, 'nasbench')):
-      self.nasbench = api.NASBench(self.nasbench_file_path)
+  def __init__(self, nasbench):
+    self.nasbench = nasbench
 
   def reset_budget(self):
-    self._load_data()
     self.nasbench.reset_budget_counters()
   
   def create_spec(self, matrix, ops):
@@ -31,7 +23,6 @@ class NAS(object):
 
 
   def generate_random_spec(self):
-    self._load_data()
     while True:
       matrix = np.random.choice(C.ALLOWED_EDGES, size=(C.NUM_VERTICES, C.NUM_VERTICES))
       matrix = np.triu(matrix, 1)
@@ -43,7 +34,7 @@ class NAS(object):
         return spec
 
   def generate_random_specs(self, size):
-    return (self.generate_random_spec() for i in range(1, size))
+    return (self.generate_random_spec() for i in range(size))
 
   def eval_query(self, spec):
     data = self.nasbench.query(spec)
@@ -52,7 +43,7 @@ class NAS(object):
 
     indv = (spec, data)
 
-    if self.compare_indv(indv, self.best_specs[-1]) >= 0:
+    if len(self.best_specs) == 0 or self.compare_indv(indv, self.best_specs[-1]) >= 0:
       self.best_specs.append((spec, data))
     else:
       self.best_specs.append(self.best_specs[-1])
