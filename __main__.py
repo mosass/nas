@@ -5,8 +5,8 @@ import numpy as np
 from nas import constant as C
 
 def main():
-    # ganas = ga_nas.GANAS()
-    # ganas.config(population_size=1)
+    ganas = ga_nas.GANAS()
+    ganas.config(population_size=1)
     specs = ganas.initialization()
 
     for s in specs:
