@@ -18,13 +18,11 @@ class GANAS(nas.NAS):
     'crossover_rate': 0.5,
   }
 
-  population = []
-  parent_specs = []
-  offspring_specs = []
-
   def initialization(self):
     self.reset_budget()
     self.population = []
+    self.parent_specs = []
+    self.offspring_specs = []
     specs = self.generate_random_specs(self.config['population_size'])
     for spec in specs:
       self.population.append(self.fitness(spec))
@@ -91,7 +89,7 @@ class GANAS(nas.NAS):
       helper.print_spec(parents[1][0])
     
     return result
-    
+
   def mutation(self):
     offspring_mutate = [self.mutate_spec(s) for s in self.offspring_specs]
     self.offspring_specs = offspring_mutate

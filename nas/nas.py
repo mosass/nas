@@ -6,10 +6,10 @@ import constant as C
 
 class NAS(object):
   times = [0.0]
-  best_specs = []
 
   def __init__(self, nasbench):
     self.nasbench = nasbench
+    self.best_specs = []
 
   def reset_budget(self):
     self.nasbench.reset_budget_counters()
