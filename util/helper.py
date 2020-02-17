@@ -1,11 +1,13 @@
 from nasbench.lib import model_spec
+import logging
+logger = logging.getLogger(__name__)
 
 def print_cell(cell, include=[]):
     for k, v in cell.items():
         if len(include) > 0 and k not in include:
             continue
-        print('%s: %s' % (k, str(v)))
+        logger.info('%s: %s', k, str(v))
 
 def print_spec(spec, original=False):
-    print('%s: %s' % ('Matrix', spec.original_matrix if original else spec.matrix))
-    print('%s: %s' % ('Ops', spec.original_ops if original else spec.ops))
+    logger.info('%s: %s', 'Matrix', spec.original_matrix if original else spec.matrix)
+    logger.info('%s: %s', 'Ops', spec.original_ops if original else spec.ops)
