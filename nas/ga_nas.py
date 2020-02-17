@@ -41,12 +41,14 @@ class GANAS(nas.NAS):
     return tuple(self.population[i] for i in ind)
 
   def crossover(self):
-    for _ in range(self.MAX_ATTEMPS):
-      parents = self.selection()
-      self.parent_specs.append(parents)
-      offsprings = self.mate_spec(parents)
-      if len(offsprings) > 0:
-        self.offspring_specs += offsprings
+    while len(self.offspring_specs) < self.config['population_size']:
+      if(random.random() < float(self.config['crossover_rate'])):
+        parents = self.selection()
+        self.parent_specs.append(parents)
+        offsprings = self.mate_spec(parents)
+        if len(offsprings) > 0:
+          self.offspring_specs += offsprings
+      else:
         break
   
   def mate_spec(self, parents):
