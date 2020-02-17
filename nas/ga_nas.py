@@ -13,7 +13,7 @@ class GANAS(nas.NAS):
   MAX_ATTEMPS = 10
 
   config = {
-    'population_size': 4,
+    'population_size': 10,
     'mutation_rate': 1.0,
     'crossover_rate': 0.5,
   }

@@ -11,17 +11,23 @@ def run_ga(nasbench):
     ganas = ga_nas.GANAS(nasbench)
     ganas.initialization()
     logger.info('--------initialization---------')
-    logger.info('generation[%d] : %f : %s ', 0, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
-    for gen in range(100):
-        logger.debug('--------generation : %d---------', gen+1)
+    gen = 0
+    logger.info('generation[%d] : %f : %s ', gen, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
+    while ganas.times[-1] < 5000000:
+        gen += 1
+        logger.debug('--------generation : %d---------', gen)
         ganas.crossover()
         ganas.mutation()
         ganas.evolve()
 
-        logger.info('generation[%d] : %f : %s ', gen+1, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
+        if gen % 100 == 0:
+            logger.info('generation[%d] : %f : %s ', gen+1, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
+    
+    return ganas
 
 
 if __name__ == "__main__":
     nasbench = api.NASBench('dataset/nasbench_only108.tfrecord')
-    for epoch in range(5):
-        run_ga(nasbench)
+    for epoch in range(3):
+        ganas = run_ga(nasbench)
+        logger.info('epoch[%d] : %f : %s ', epoch, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
