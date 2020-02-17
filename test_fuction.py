@@ -29,13 +29,11 @@ def main(nasbench):
         for s in ganas.offspring_specs:
             helper.print_spec(s)
         logger.info('-------------------------------')
-        # ganas.mutation()
-        # logger.info('--------mutation-offsprings--------------')
-        # for s in ganas.offspring_specs:
-        #     helper.print_spec(s)
-        #     helper.print_cell(nasbench.query(s))
-        # logger.info('-------------------------------')
-
+        ganas.mutation()
+        logger.info('--------mutation-offsprings--------------')
+        for s in ganas.offspring_specs:
+            helper.print_spec(s)
+        logger.info('-------------------------------')
         ganas.evolve()
 
 

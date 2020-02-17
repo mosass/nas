@@ -57,34 +57,19 @@ class GANAS(nas.NAS):
     p1_ops = copy.deepcopy(parents[0][0].original_ops)
     p2_ops = copy.deepcopy(parents[1][0].original_ops)
 
-    pl1 = len(p1_ops)
-    pl2 = len(p2_ops)
-    s1 = pl1/2
-    s2 = pl2/2
+    s1 = random.randint(0,C.NUM_VERTICES)
 
-    c1_ops = p1_ops[:s1]+p2_ops[s2:]
-    c2_ops = p2_ops[:s2]+p1_ops[s1:]
+    c1_ops = p1_ops[:s1]+p2_ops[s1:]
+    c2_ops = p2_ops[:s1]+p1_ops[s1:]
 
-    cl1 = len(c1_ops)
-    cl2 = len(c2_ops)
-    
-    c1_matrix = np.zeros([cl1, cl1])
-    c2_matrix = np.zeros([cl2, cl2])
-
-    c1_matrix[:s1,:s1] = p1_matrix[:s1, :s1]
-    if cl1 < pl2: 
-      c1_matrix[:,s1:] = p2_matrix[:cl1, s2:]
-    else:
-      c1_matrix[cl1 - pl2:,s1:] = p2_matrix[:, s2:]
+    c1_matrix = np.zeros([C.NUM_VERTICES,C.NUM_VERTICES], dtype=int)
+    c2_matrix = np.zeros([C.NUM_VERTICES,C.NUM_VERTICES], dtype=int)
+    c1_matrix[:,:s1] = p1_matrix[:, :s1]
+    c1_matrix[:,s1:] = p2_matrix[:, s1:]
+    c2_matrix[:,:s1] = p2_matrix[:, :s1]
+    c2_matrix[:,s1:] = p1_matrix[:, s1:]
 
     c1_matrix = np.triu(c1_matrix, 1)
-
-    c2_matrix[:s2,:s2] = p2_matrix[:s2, :s2]
-    if cl2 < pl1: 
-      c2_matrix[:,s2:] = p1_matrix[:cl2, s1:]
-    else:
-      c2_matrix[cl2 - pl1:,s2:] = p1_matrix[:, s1:]
-
     c2_matrix = np.triu(c2_matrix, 1)
 
     c1_spec = self.create_spec(matrix=c1_matrix, ops=c1_ops)
@@ -106,16 +91,15 @@ class GANAS(nas.NAS):
       helper.print_spec(parents[1][0])
     
     return result
-      
-
+    
   def mutation(self):
     offspring_mutate = [self.mutate_spec(s) for s in self.offspring_specs]
     self.offspring_specs = offspring_mutate
   
   def mutate_spec(self, old_spec):
     for _ in range(self.MAX_ATTEMPS):
-      new_matrix = copy.deepcopy(old_spec.matrix)
-      new_ops = copy.deepcopy(old_spec.ops)
+      new_matrix = copy.deepcopy(old_spec.original_matrix)
+      new_ops = copy.deepcopy(old_spec.original_ops)
 
       vertices = len(new_ops)
 
@@ -127,7 +111,7 @@ class GANAS(nas.NAS):
             new_matrix[src, dst] = 1 - new_matrix[src, dst]
 
       # In expectation, one op is resampled.
-      op_mutation_prob = self.config['mutation_rate'] / C.OP_SPOTS
+      op_mutation_prob = self.config['mutation_rate'] / vertices - 2
       for ind in range(1, vertices - 1):
         if random.random() < op_mutation_prob:
           available = [o for o in C.ALLOWED_OPS if o != new_ops[ind]]
