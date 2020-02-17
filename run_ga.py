@@ -20,8 +20,8 @@ def run_ga(nasbench):
         ganas.mutation()
         ganas.evolve()
 
-        if gen % 100 == 0:
-            logger.info('generation[%d] : %f : %s ', gen+1, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
+        if gen % 500 == 0:
+            logger.info('generation[%d] : %f : %s ', gen, ganas.times[-1], ganas.best_specs[-1][1]['validation_accuracy'])
     
     return ganas
 
